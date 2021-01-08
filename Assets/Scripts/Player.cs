@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField]
+    private float _health = 75;
     private float _speed = 5.0f;
     private float _jumpForce = 4.0f;
     [SerializeField]
     private Rigidbody _rb;
     [SerializeField]
     private BoxCollider _bc;
-    [SerializeField]
     private bool _isGrounded;
-    [SerializeField]
     private bool _isDoubleJumpAvailable;
     [SerializeField]
     private float _blinkCooldown = 5.0f;
     private float _nextBlink = -1.0f;
     private float _blinkDistance = 5.0f;
+    [SerializeField]
+    private GameObject _orbPrefab;
+    [SerializeField]
+    private GameObject _attackSpawn;
+    [SerializeField]
+    private bool _facingRight = true;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +38,22 @@ public class Player : MonoBehaviour
         IsGrounded();
         Movement();
 
+        //turn towards mouse
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition.z = 0;
+        Vector3 playerPosition = Camera.main.WorldToScreenPoint(transform.position);
+        if (mousePosition.x < playerPosition.x && _facingRight)
+        {
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+            _facingRight = false;
+        }
+        else if (mousePosition.x > playerPosition.x && !_facingRight)
+        {
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+            _facingRight = true;
+        }
+
+        //jump
         if (Input.GetKeyDown(KeyCode.Space) && (_isGrounded || _isDoubleJumpAvailable))
         {
             if (_isGrounded)
@@ -46,12 +68,18 @@ public class Player : MonoBehaviour
             
         }
 
+        //movement attack
         if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time > _nextBlink)
         {
             Blink();
         }
 
-
+        //basic attack
+        if (Input.GetMouseButtonDown(0))
+        {
+            BasicAttack();
+        }
+        
         //Lock movement on the Z axis to 0
         Vector3 pos = transform.position;
         pos.z = 0;
@@ -59,6 +87,17 @@ public class Player : MonoBehaviour
         transform.rotation = new Quaternion(0, 0, 0, 0);
     }
 
+    public int IsFacingRight()
+    {
+        if (_facingRight)
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+    }
     void Movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -118,6 +157,12 @@ public class Player : MonoBehaviour
             rayColor = Color.red;
             _isGrounded = false;
         }
+    }
+
+    private void BasicAttack()
+    {
+        Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
+        GameObject orb = Instantiate(_orbPrefab, _attackSpawn.transform.position, Quaternion.identity);
     }
 
 }
