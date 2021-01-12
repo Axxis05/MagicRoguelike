@@ -21,15 +21,19 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _orbPrefab;
     [SerializeField]
-    private GameObject _attackSpawn;
+    public GameObject attackSpawner;
     [SerializeField]
     private bool _facingRight = true;
+    [SerializeField]
+    public Wand equippedWand;
 
     // Start is called before the first frame update
     void Start()
     {
         _isGrounded = false;
         _isDoubleJumpAvailable = false;
+
+        equippedWand.SetAbilityDefaults();          //resets values in Ability ScriptableObjects to default values
     }
 
     // Update is called once per frame
@@ -68,16 +72,17 @@ public class Player : MonoBehaviour
             
         }
 
-        //movement attack
-        if (Input.GetKeyDown(KeyCode.LeftShift) && Time.time > _nextBlink)
+        //utility attack
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            Blink();
+            equippedWand.UseUAttack(this, attackSpawner);
+            //Blink();
         }
 
         //basic attack
         if (Input.GetMouseButtonDown(0))
         {
-            BasicAttack();
+            equippedWand.UseLAttack(this, attackSpawner);
         }
         
         //Lock movement on the Z axis to 0
@@ -162,7 +167,7 @@ public class Player : MonoBehaviour
     private void BasicAttack()
     {
         Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
-        GameObject orb = Instantiate(_orbPrefab, _attackSpawn.transform.position, Quaternion.identity);
+        GameObject orb = Instantiate(_orbPrefab, attackSpawner.transform.position, Quaternion.identity);
     }
 
 }

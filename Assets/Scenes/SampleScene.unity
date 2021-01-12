@@ -343,8 +343,9 @@ MonoBehaviour:
   _blinkCooldown: 5
   _orbPrefab: {fileID: 8538865039091211230, guid: 74185090af50ad842bcb846fda756ed6,
     type: 3}
-  _attackSpawn: {fileID: 2119332194}
+  attackSpawner: {fileID: 2119332194}
   _facingRight: 1
+  equippedWand: {fileID: 11400000, guid: 83772750080de4e45b130c32763d2a2d, type: 2}
 --- !u!1 &743467671
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,6 +757,52 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &1788035936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1788035937}
+  - component: {fileID: 1788035938}
+  m_Layer: 0
+  m_Name: GameController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1788035937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1788035936}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.32505327, y: 3.357162, z: -2.8417969}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1788035938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1788035936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea667eb99a3c05438cca5a4431943b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilities:
+  - {fileID: 11400000, guid: 0b4cab5c07b8fdb469ebd76f37d7e776, type: 2}
+  - {fileID: 11400000, guid: 73bd087c4545e254aa607a011192d261, type: 2}
 --- !u!1 &1793071601
 GameObject:
   m_ObjectHideFlags: 0
@@ -860,7 +907,7 @@ GameObject:
   - component: {fileID: 2119332195}
   - component: {fileID: 2119332196}
   m_Layer: 0
-  m_Name: AttackSpawn
+  m_Name: AttackSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -6,19 +6,19 @@ public class Orb : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 7.0f;
-    private float _damage = 10f;
+    public float _damage = 10f;
     [SerializeField]
     public SphereCollider _sc;
     Player player;
     [SerializeField]
-    AttackSpawn attackSpawner;
+    GameObject attackSpawner;
     private Vector3 _direction;
 
     // Start is called before the first frame update
     void Start()
     {
         player = FindObjectOfType<Player>();
-        attackSpawner = FindObjectOfType<AttackSpawn>();
+        attackSpawner = player.attackSpawner;
         _direction = attackSpawner.transform.right;
     }
 
