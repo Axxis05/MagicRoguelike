@@ -1,27 +1,46 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField]
-    private float _health = 50;
-    private float _speed = 2.5f;
-    private int horizontalDirection = 1;
-    [SerializeField]
-    private CapsuleCollider _cc;
+    public MovementController mc;
+    [SerializeField] private EnemyBrain brain;
+    [SerializeField] private EnemyAttack attack;
+    [SerializeField] public GameObject weapon;                   //projectile spawn point
+    [SerializeField] public  EnemyStats stats;
+
+    public float health;
+    public float meleeDamage;
+    public float moveSpeed;
+    public float jumpForce;
+    public float attackRange;
+    public bool chasing;
+
+    [SerializeField] public Transform[] waypoints;
+    public int nextWaypoint;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        mc = GetComponent<MovementController>();
 
+        health = stats.health;
+        meleeDamage = stats.meleeDamage;
+        moveSpeed = stats.moveSpeed;
+        jumpForce = stats.jumpForce;
+        attackRange = stats.attackRange;
+        chasing = false;
+
+        mc.SetSpeed(moveSpeed);
+        nextWaypoint = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Movement();
+        brain.Think(this);
 
         //Lock movement on the Z axis to 0
         Vector3 pos = transform.position;
@@ -30,63 +49,39 @@ public class Enemy : MonoBehaviour
         transform.rotation = new Quaternion(0, 0, 0, 0);
     }
 
-    void Movement()
-    {
-        CheckForWall();
-        CheckForFloor();
-
-        Vector3 direction = new Vector3(horizontalDirection, 0f, 0f);
-        transform.Translate(direction * _speed * Time.deltaTime);
-    }
-
-    void CheckForWall()
-    {
-        RaycastHit hit;
-        float extraLength = 0.5f;
-        bool raycastHit = Physics.Raycast(_cc.bounds.center, Vector3.right * horizontalDirection, out hit, _cc.bounds.extents.x + extraLength);
-        Debug.DrawRay(_cc.bounds.center, Vector3.right * horizontalDirection * (_cc.bounds.extents.x + extraLength));
-        Color rayColor;
-        if (raycastHit && hit.transform.tag == "Environment")
-        {
-            rayColor = Color.green;
-            horizontalDirection *= -1;
-        }
-        else
-        {
-            rayColor = Color.red;
-            
-        }
-    }
-
-    void CheckForFloor()
-    {
-        RaycastHit hit;
-        float xOffset = 0.5f;
-        float extraHeight = 0.3f;
-
-        Vector3 rayCenter = _cc.bounds.center + new Vector3(xOffset * horizontalDirection, 0, 0);
-        bool raycastHit = Physics.Raycast(rayCenter, Vector3.down, out hit, _cc.bounds.extents.x + extraHeight);
-        Debug.DrawRay(rayCenter, Vector3.down * (_cc.bounds.extents.x + extraHeight));
-        Color rayColor;
-        if (!raycastHit)
-        {
-            rayColor = Color.red;
-            horizontalDirection *= -1;
-        }
-        else
-        {
-            rayColor = Color.green;
-            
-        }
-    }
-
     public void TakeDamage(float damage)
     {
-        _health -= damage;
-
-        if (_health <= 0)
+        health -= damage;
+        if(health <= 0)
         {
             Destroy(this.gameObject);
+        }
+    }
+
+    public void Attack()
+    {
+        attack.PerformAttack(this);
+    }
+
+    public void Move(Transform waypoint)
+    {
+        Vector3 destination = waypoint.position;
+        destination.z = 0;
+        mc.MoveTo(destination);
+    }
+
+    public void Jump()
+    {
+        mc.Jump(jumpForce);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.CompareTag("Player"))
+        {
+            Player player = collision.gameObject.GetComponent<Player>();
+            player.TakeDamage(meleeDamage);
+
         }
     }
 }

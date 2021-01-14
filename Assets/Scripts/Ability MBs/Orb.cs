@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class Orb : MonoBehaviour
 {
-    [SerializeField]
-    private float _speed = 7.0f;
+    [SerializeField] private float _speed = 7.0f;
     public float _damage = 10f;
-    [SerializeField]
-    public SphereCollider _sc;
+    [SerializeField] public SphereCollider _sc;
     Player player;
-    [SerializeField]
-    GameObject attackSpawner;
+    [SerializeField] GameObject attackSpawner;
     private Vector3 _direction;
 
     // Start is called before the first frame update

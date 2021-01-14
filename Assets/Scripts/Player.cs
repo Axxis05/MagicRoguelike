@@ -4,28 +4,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField]
-    private float _health = 75;
+    [SerializeField] private float _health = 75;
     private float _speed = 5.0f;
     private float _jumpForce = 4.0f;
-    [SerializeField]
-    private Rigidbody _rb;
-    [SerializeField]
-    private BoxCollider _bc;
+    [SerializeField] private Rigidbody _rb;
+    [SerializeField] public BoxCollider myCollider;
     private bool _isGrounded;
     private bool _isDoubleJumpAvailable;
-    [SerializeField]
-    private float _blinkCooldown = 5.0f;
+    [SerializeField] private float _blinkCooldown = 5.0f;
     private float _nextBlink = -1.0f;
     private float _blinkDistance = 5.0f;
-    [SerializeField]
-    private GameObject _orbPrefab;
-    [SerializeField]
-    public GameObject attackSpawner;
-    [SerializeField]
-    private bool _facingRight = true;
-    [SerializeField]
-    public Wand equippedWand;
+    [SerializeField] private GameObject _orbPrefab;
+    [SerializeField] public GameObject attackSpawner;
+    [SerializeField] private bool _facingRight = true;
+    [SerializeField] public Wand equippedWand;
 
     // Start is called before the first frame update
     void Start()
@@ -148,8 +140,8 @@ public class Player : MonoBehaviour
     private void IsGrounded()
     {
         float extraHeight = 0.01f;
-        bool raycastHit = Physics.Raycast(_bc.bounds.center, Vector3.down, _bc.bounds.extents.y + extraHeight);
-        Debug.DrawRay(_bc.bounds.center, Vector3.down * (_bc.bounds.extents.y + extraHeight));
+        bool raycastHit = Physics.Raycast(myCollider.bounds.center, Vector3.down, myCollider.bounds.extents.y + extraHeight);
+        Debug.DrawRay(myCollider.bounds.center, Vector3.down * (myCollider.bounds.extents.y + extraHeight));
         Color rayColor;
         if (raycastHit)
         {
@@ -170,4 +162,18 @@ public class Player : MonoBehaviour
         GameObject orb = Instantiate(_orbPrefab, attackSpawner.transform.position, Quaternion.identity);
     }
 
+    public void TakeDamage(float damage)
+    {
+        _health -= damage;
+        if(_health <= 0)
+        {
+            Die();
+        }
+
+    }
+
+    private void Die()
+    {
+        //player dies
+    }
 }
